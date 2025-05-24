@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+  db:
+    container_name: db
+    image: postgres
+    ports:
+      - "5433:5433"
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      PGPORT: 5433
+    networks:
+      - worldstage-net
+
+  nginx-rtmp:
+    image: tiangolo/nginx-rtmp:latest
+    platform: linux/arm64
+    ports:
+      - "1935:1935" # RTMP for OBS
+      - "8080:8080" # HLS for viewers
+    volumes:
+      - hls-data:/tmp/hls
+      - ../backend/nginx-rtmp/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - spring-boot
+    networks:
+      - worldstage-net
+
+  spring-boot:
+    build:
+      context: ../backend/worldstage-api
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - db
+    networks:
+      - worldstage-net
+
+volumes:
+  hls-data:
+
+networks:
+  worldstage-net:
+    driver: bridge
