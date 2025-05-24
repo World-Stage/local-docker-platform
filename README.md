@@ -16,7 +16,7 @@ ROOT
 
 ## Getting Started
 
-To get everything running, simply execute the following command from the root directory:
+To get everything running, simply execute the following command from the local-docker-platform directory:
 
 ```
 docker compose up --build
