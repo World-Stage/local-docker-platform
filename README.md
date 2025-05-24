@@ -1,19 +1,32 @@
 # local-docker-platform
-Docker Orchestrator that will spin up Spring Boot API and Nginx Server
 
-Assuming your file structure looks like this:
+Docker Orchestrator that will spin up a Spring Boot API and Nginx Server.
+
+## File Structure
+
+```
 ROOT
-|
-| - local Docker Platform
-  | - dockercompose.yml
-| - backend
-  | - nginx-rtmp
-    | - nginx.conf
-  | - world-stage-api
+├── local-docker-platform
+│   └── dockercompose.yml
+├── backend
+│   ├── nginx-rtmp
+│   │   └── nginx.conf
+│   └── world-stage-api
+```
 
-all you have to do is run docker compose up --build and it should just work!
+## Getting Started
 
-Spring Boot is on localhost:8082
-Nginx is on localhost:8080
+To get everything running, simply execute the following command from the root directory:
 
-You will have to manually run front end. Check out that read me
+```
+docker compose up --build
+```
+
+## Services
+
+- **Spring Boot API**: http://localhost:8082  
+- **Nginx (RTMP server)**: http://localhost:8080
+
+## Frontend
+
+You will need to manually start the frontend. Check out the README.md in the frontend directory for more details.
