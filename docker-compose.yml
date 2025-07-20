@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   db:
     container_name: db
@@ -17,15 +18,16 @@ services:
     image: tiangolo/nginx-rtmp:latest
     platform: linux/arm64
     ports:
-      - "1935:1935" # RTMP for OBS
-      - "8080:8080" # HLS for viewers
+      - "1935:1935" # RTMP ingest (OBS)
+      - "8080:8080" # HLS delivery
     volumes:
-      - hls-data:/tmp/hls
+      - ./hls-data:/var/hls
       - ../backend/nginx-rtmp/nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - spring-boot
     networks:
       - worldstage-net
+    depends_on:
+      - spring-boot
+    user: root  # Update for prod
 
   spring-boot:
     build:
@@ -34,13 +36,22 @@ services:
       - "8082:8082"
     environment:
       SPRING_PROFILES_ACTIVE: docker
-    depends_on:
-      - db
     networks:
       - worldstage-net
+    depends_on:
+      - db
 
-volumes:
-  hls-data:
+  ffmpeg-worker:
+    build:
+      context: ../backend/encoder-worker
+    container_name: transcoder-worker
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./hls-data:/var/hls
+    networks:
+      - worldstage-net
+    user: root  # Update for prod
 
 networks:
   worldstage-net:
