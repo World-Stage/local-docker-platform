@@ -32,6 +32,7 @@ services:
   spring-boot:
     build:
       context: ../backend/worldstage-api
+      dockerfile: Dockerfile.local
     ports:
       - "8082:8082"
     environment:
